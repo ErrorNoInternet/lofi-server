@@ -1,4 +1,5 @@
 pafy
 requests
 websockets
+youtube_dl
 
