@@ -1,14 +1,36 @@
 import os
+import pafy
+import time
 import asyncio
+import requests
 import websockets
 
-async def handleClient(websocket, path):
-    await websocket.send("Hello World from Heroku!")
-
-port = 8080
+played = {}; port = 8080
 environmentPort = os.getenv("PORT")
 if environmentPort != None:
     port = int(environmentPort)
+videoURL = "https://www.youtube.com/watch?v=5qap5aO4i9A"
+
+async def handleClient(websocket, path):
+    print("Handling new connection..."); played[path] = []
+    while True:
+        video = pafy.new(videoURL); streamURL = video.streams[0].url
+        playlistData = requests.get(streamURL).text.replace("\n", "")
+        playlists = playlistData.split("#EXTINF:5.0,"); playlists = playlists[1:]
+        for url in playlists:
+            index = 64
+            while True:
+                id = url.split("/")[index]
+                try:
+                    id = int(id); break
+                except:
+                    index += 1; continue
+            if id not in played[path]:
+                played[path].append(id)
+                streamData = requests.get(url).content
+                print("Sending segment to client...")
+                await websocket.send(streamData); await websocket.recv()
+        time.sleep(1)
 
 serverThread = websockets.serve(handleClient, "0.0.0.0", port)
 asyncio.get_event_loop().run_until_complete(serverThread)
