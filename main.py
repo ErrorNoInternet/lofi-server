@@ -14,8 +14,13 @@ videoURL = "https://www.youtube.com/watch?v=5qap5aO4i9A"
 async def handleClient(websocket, path):
     print("Handling new connection..."); played[path] = []
     while True:
-        video = pafy.new(videoURL); streamURL = video.streams[0].url
-        playlistData = requests.get(streamURL).text.replace("\n", "")
+        while True:
+            try:
+                video = pafy.new(videoURL); streamURL = video.streams[0].url
+                playlistData = requests.get(streamURL).text.replace("\n", "")
+                break
+            except:
+                continue
         playlists = playlistData.split("#EXTINF:5.0,"); playlists = playlists[1:]
         for url in playlists:
             index = 64
