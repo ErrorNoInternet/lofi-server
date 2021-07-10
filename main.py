@@ -20,6 +20,7 @@ async def handleClient(websocket, path):
                 playlistData = requests.get(streamURL).text.replace("\n", "")
                 break
             except:
+                print("Failed to fetch video, retrying...")
                 continue
         playlists = playlistData.split("#EXTINF:5.0,"); playlists = playlists[1:]
         for url in playlists:
