@@ -15,6 +15,7 @@ videoURL = "https://www.youtube.com/watch?v=5qap5aO4i9A"
 def updateVideo():
     while True:
         try:
+            global video
             video = pafy.new(videoURL); time.sleep(2)
         except:
             continue
