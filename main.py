@@ -3,6 +3,7 @@ import pafy
 import time
 import asyncio
 import requests
+import threading
 import websockets
 
 played = {}; port = 8080; video = None
@@ -13,7 +14,10 @@ videoURL = "https://www.youtube.com/watch?v=5qap5aO4i9A"
 
 def updateVideo():
     while True:
-        video = pafy.new(videoURL); time.sleep(2)
+        try:
+            video = pafy.new(videoURL); time.sleep(2)
+        except:
+            continue
 
 async def handleClient(websocket, path):
     print("Handling new connection..."); played[path] = []
@@ -24,7 +28,7 @@ async def handleClient(websocket, path):
                 playlistData = requests.get(streamURL).text.replace("\n", "")
                 break
             except:
-                print("Failed to fetch video, retrying...")
+                print("Failed to fetch video, retrying..."); time.sleep(1)
                 continue
         playlists = playlistData.split("#EXTINF:5.0,"); playlists = playlists[1:]
         for url in playlists:
@@ -42,6 +46,7 @@ async def handleClient(websocket, path):
                 await websocket.send(streamData); await websocket.recv()
         time.sleep(1)
 
+threading.Thread(target=updateVideo).start()
 serverThread = websockets.serve(handleClient, "0.0.0.0", port)
 asyncio.get_event_loop().run_until_complete(serverThread)
 print("Starting server..."); asyncio.get_event_loop().run_forever()
