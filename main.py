@@ -5,18 +5,22 @@ import asyncio
 import requests
 import websockets
 
-played = {}; port = 8080
+played = {}; port = 8080; video = None
 environmentPort = os.getenv("PORT")
 if environmentPort != None:
     port = int(environmentPort)
 videoURL = "https://www.youtube.com/watch?v=5qap5aO4i9A"
+
+def updateVideo():
+    while True:
+        video = pafy.new(videoURL); time.sleep(2)
 
 async def handleClient(websocket, path):
     print("Handling new connection..."); played[path] = []
     while True:
         while True:
             try:
-                video = pafy.new(videoURL); streamURL = video.streams[0].url
+                streamURL = video.streams[0].url
                 playlistData = requests.get(streamURL).text.replace("\n", "")
                 break
             except:
