@@ -1,2 +1,2 @@
 # lofi-server
-The server for streaming Lofi nusic on Heroku
+The server for streaming Lofi music on Heroku
