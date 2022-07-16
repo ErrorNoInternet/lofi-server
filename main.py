@@ -11,7 +11,7 @@ except:
     import pafy
 
 video_url = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
-buffer_limit = 100
+buffer_limit = 200
 last_played = {}
 video_data = {}
 
