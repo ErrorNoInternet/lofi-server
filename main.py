@@ -72,7 +72,7 @@ async def handle_client(websocket, path):
         await websocket.recv()
     while True:
         if max(video_data.keys()) > last_played[path]:
-            id = max(video_data.keys())
+            id = last_played[path] + 1
             last_played[path] = id
             print(f"Sending {id} to {path}...")
             await websocket.send(video_data[id])
