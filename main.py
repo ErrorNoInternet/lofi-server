@@ -45,7 +45,7 @@ def update_video():
                     size = 0
                     for video_data_id in video_data:
                         size += len(video_data[video_data_id])
-                    print(f"Downloading {id} ({len(video_data)} item(s) in memory, {round(size/1024/1024, 1)} MB)...")
+                    print(f"Downloading {id} ({len(video_data)} segment{'s' if len(video_data) != 1 else ''} in memory, {round(size/1024/1024, 1)} MB)...")
                     stream_data = requests.get(url).content
                     video_data[id] = stream_data
                 if len(video_data) > buffer_limit:
