@@ -1,10 +1,15 @@
 import os
-import pafy
 import time
 import asyncio
 import requests
 import threading
 import websockets
+
+try:
+    import pafy
+except:
+    os.system("pip install git+https://github.com/Cupcakus/pafy")
+    import pafy
 
 played = {}
 video = None
