@@ -11,6 +11,7 @@ except:
     import pafy
 
 video_url = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
+buffer_limit = 100
 last_played = {}
 video_data = {}
 
@@ -44,7 +45,7 @@ def update_video():
                     print(f"Adding {id}")
                     stream_data = requests.get(url).content
                     video_data[id] = stream_data
-                if len(video_data) > 20:
+                if len(video_data) > buffer_limit:
                     id = min(video_data.keys())
                     print(f"Removing {id}")
                     del video_data[id]
