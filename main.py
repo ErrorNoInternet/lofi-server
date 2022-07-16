@@ -41,14 +41,14 @@ def update_video():
                     except:
                         index += 1
                         continue
-                if id not in video_data.keys():
-                    print(f"Adding {id}...")
-                    stream_data = requests.get(url).content
-                    video_data[id] = stream_data
                 if len(video_data) > buffer_limit:
                     id = min(video_data.keys())
                     print(f"Removing {id}...")
                     del video_data[id]
+                if id not in video_data.keys():
+                    print(f"Adding {id}...")
+                    stream_data = requests.get(url).content
+                    video_data[id] = stream_data
         except Exception as exception:
             print(f"Failed to fetch video: {exception}")
             continue
