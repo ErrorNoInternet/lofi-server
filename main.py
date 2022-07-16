@@ -11,7 +11,7 @@ except:
     import pafy
 
 video_url = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
-buffer_limit = 200
+buffer_limit = 100
 last_played = {}
 video_data = {}
 
@@ -22,7 +22,7 @@ def update_video():
             while True:
                 try:
                     video = pafy.new(video_url)
-                    stream_url = video.streams[0].url
+                    stream_url = video.streams[1].url
                     playlist_data = requests.get(stream_url).text.replace("\n", "")
                     break
                 except Exception as exception:
