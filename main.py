@@ -67,6 +67,7 @@ async def handle_client(websocket, path):
 
     copy = dict(video_data)
     for id in copy:
+        print(f"Sending {id} (buffer) to {path}...")
         last_played[path] = id
         await websocket.send(copy[id])
         await websocket.recv()
