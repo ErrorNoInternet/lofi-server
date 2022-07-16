@@ -62,9 +62,10 @@ async def handle_client(websocket, path):
         while not video_data:
             time.sleep(1)
 
-    for id in video_data:
+    copy = dict(video_data)
+    for id in copy:
         last_played[path] = id
-        await websocket.send(video_data[id])
+        await websocket.send(copy[id])
         await websocket.recv()
     while True:
         if max(video_data.keys()) > last_played[path]:
