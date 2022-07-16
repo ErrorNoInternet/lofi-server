@@ -54,12 +54,12 @@ def update_video():
             continue
 
 async def handle_client(websocket, path):
-    print("Handling new connection...")
+    print(f"Handling new connection from {path}...")
 
     global video_data
     last_played[path] = 0
     if not video_data:
-        print("Waiting for buffer...")
+        print(f"Waiting for buffer ({path})...")
         while not video_data:
             time.sleep(1)
 
@@ -72,6 +72,7 @@ async def handle_client(websocket, path):
         if max(video_data.keys()) > last_played[path]:
             id = max(video_data.keys())
             last_played[path] = id
+            print(f"Sending {id} to {path}...")
             await websocket.send(video_data[id])
 
 async def main():
