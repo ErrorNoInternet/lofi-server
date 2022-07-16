@@ -42,7 +42,10 @@ def update_video():
                         index += 1
                         continue
                 if id not in video_data.keys():
-                    print(f"Adding {id}...")
+                    size = 0
+                    for id in video_data:
+                        size += len(video_data[id])
+                    print(f"Downloading {id} ({len(video_data)} item(s) in memory, {round(size/1024/1024, 1)} MB)...")
                     stream_data = requests.get(url).content
                     video_data[id] = stream_data
                 if len(video_data) > buffer_limit:
@@ -73,6 +76,8 @@ async def handle_client(websocket, path):
             last_played[path] = id
             print(f"Sending {id} to {path}...")
             await websocket.send(video_data[id])
+        else:
+            time.sleep(0.5)
 
 async def main():
     async with websockets.serve(handle_client, "0.0.0.0", os.getenv("PORT") if os.getenv("PORT") != None else 8080):
