@@ -6,22 +6,23 @@ import requests
 import threading
 import websockets
 
-played = {}; port = 8080; video = None
-environmentPort = os.getenv("PORT")
-if environmentPort != None:
-    port = int(environmentPort)
-videoURL = "https://www.youtube.com/watch?v=5qap5aO4i9A"
+played = {}
+video = None
+videoURL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
 
-def updateVideo():
+def update_video():
+    global video
     while True:
         try:
-            global video
-            video = pafy.new(videoURL); time.sleep(2)
-        except:
+            video = pafy.new(videoURL)
+            time.sleep(3)
+        except Exception as exception:
+            print(exception)
             continue
 
-async def handleClient(websocket, path):
-    print("Handling new connection..."); played[path] = []
+async def handle_client(websocket, path):
+    print("Handling new connection...")
+    played[path] = []
     while True:
         while True:
             try:
@@ -29,26 +30,32 @@ async def handleClient(websocket, path):
                 playlistData = requests.get(streamURL).text.replace("\n", "")
                 break
             except Exception as error:
-                print(f"{error}\nFailed to fetch video, retrying..."); time.sleep(1)
+                print(f"{error}\nFailed to fetch video, retrying...")
+                time.sleep(1)
                 continue
-        playlists = playlistData.split("#EXTINF:5.0,"); playlists = playlists[1:]
+        playlists = playlistData.split("#EXTINF:5.0,")
+        playlists = playlists[1:]
         for url in playlists:
             index = 64
             while True:
                 id = url.split("/")[index]
                 try:
-                    id = int(id); break
+                    id = int(id)
+                    break
                 except:
-                    index += 1; continue
+                    index += 1
+                    continue
             if id not in played[path]:
                 played[path].append(id)
                 streamData = requests.get(url).content
                 print("Sending segment to client...")
-                await websocket.send(streamData); await websocket.recv()
+                await websocket.send(streamData)
+                await websocket.recv()
         time.sleep(1)
 
-threading.Thread(target=updateVideo).start()
-serverThread = websockets.serve(handleClient, "0.0.0.0", port)
-asyncio.get_event_loop().run_until_complete(serverThread)
-print("Starting server..."); asyncio.get_event_loop().run_forever()
+print("Starting server...")
+threading.Thread(target=update_video).start()
+server_thread = websockets.serve(handle_client, "0.0.0.0", os.getenv("PORT") if os.getenv("PORT") != None else 8080)
+asyncio.get_event_loop().run_until_complete(server_thread)
+asyncio.get_event_loop().run_forever()
 

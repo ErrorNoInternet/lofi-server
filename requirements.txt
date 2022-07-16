@@ -1,4 +1,4 @@
-pafy
+git+https://github.com/Cupcakus/pafy
 requests
 websockets
 youtube_dl
