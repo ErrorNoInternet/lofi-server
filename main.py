@@ -43,8 +43,8 @@ def update_video():
                         continue
                 if id not in video_data.keys():
                     size = 0
-                    for id in video_data:
-                        size += len(video_data[id])
+                    for video_data_id in video_data:
+                        size += len(video_data[video_data_id])
                     print(f"Downloading {id} ({len(video_data)} item(s) in memory, {round(size/1024/1024, 1)} MB)...")
                     stream_data = requests.get(url).content
                     video_data[id] = stream_data
