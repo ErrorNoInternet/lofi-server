@@ -69,14 +69,23 @@ async def handle_client(websocket, path):
     for id in copy:
         print(f"Sending {id} (buffer) to {path}...")
         last_played[path] = id
-        await websocket.send(copy[id])
-        await websocket.recv()
+        try:
+            await websocket.send(copy[id])
+            await websocket.recv()
+        except Exception as exception:
+            print(f"Unable to communicate with {path}: {exception}")
+            return
     while True:
         if max(video_data.keys()) > last_played[path]:
             id = last_played[path] + 1
             last_played[path] = id
             print(f"Sending {id} to {path}...")
-            await websocket.send(video_data[id])
+            try:
+                await websocket.send(video_data[id])
+                await websocket.recv()
+            except Exception as exception:
+                print(f"Unable to communicate with {path}: {exception}")
+                return
         else:
             time.sleep(0.5)
 
