@@ -54,6 +54,7 @@ def update_video():
                     del video_data[old_id]
                 new_last_played = last_played
                 for path in last_played:
+                    print(path, last_played[path], id)
                     if last_played[path] - id > buffer_limit:
                         print(f"Removing {old_id} (dead connection)...")
                         del new_last_played[path]
