@@ -1,5 +1,4 @@
 import os
-import time
 import asyncio
 import requests
 import threading
@@ -27,7 +26,7 @@ def update_video():
                     break
                 except Exception as exception:
                     print(f"Failed to fetch video: {exception}")
-                    time.sleep(1)
+                    await asyncio.sleep(1)
                     continue
             playlists = playlist_data.split("#EXTINF:5.0,")
             playlists = playlists[1:]
@@ -63,7 +62,7 @@ async def handle_client(websocket, path):
     if not video_data:
         print(f"Waiting for buffer ({path})...")
         while not video_data:
-            time.sleep(1)
+            await asyncio.sleep(1)
 
     copy = dict(video_data)
     for id in copy:
@@ -87,7 +86,7 @@ async def handle_client(websocket, path):
                 print(f"Unable to communicate with {path}: {exception}")
                 return
         else:
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
 
 async def main():
     async with websockets.serve(handle_client, "0.0.0.0", os.getenv("PORT") if os.getenv("PORT") != None else 8080):
