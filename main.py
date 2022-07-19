@@ -54,12 +54,11 @@ def update_video():
                     del video_data[old_id]
                 new_last_played = last_played
                 for path in last_played:
-                    print(path, last_played[path], id)
-                    if last_played[path] - id > buffer_limit:
+                    if id - last_played[path] > buffer_limit:
                         print(f"Removing {old_id} (dead connection)...")
                         del new_last_played[path]
                 last_played = new_last_played
-            time.sleep(1)
+            time.sleep(0.5)
         except Exception as exception:
             print(f"Failed to process stream: {exception}")
             continue
