@@ -16,7 +16,7 @@ last_played = {}
 video_data = {}
 
 def update_video():
-    global video_data
+    global last_played, video_data
     while True:
         try:
             while True:
