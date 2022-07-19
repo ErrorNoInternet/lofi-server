@@ -48,11 +48,18 @@ def update_video():
                     print(f"Downloading {id} ({len(video_data)} segment{'s' if len(video_data) != 1 else ''} in memory, {round(size/1024/1024, 1)} MB)...")
                     stream_data = requests.get(url).content
                     video_data[id] = stream_data
+
                 if len(video_data) > buffer_limit:
-                    id = min(video_data.keys())
-                    del video_data[id]
+                    old_id = min(video_data.keys())
+                    del video_data[old_id]
+                new_last_played = last_played
+                for path in last_played:
+                    if last_played[path] - id > buffer_limit:
+                        print(f"Removing {old_id} (dead connection)...")
+                        del new_last_played[path]
+                last_played = new_last_played
         except Exception as exception:
-            print(f"Failed to fetch video: {exception}")
+            print(f"Failed to process stream: {exception}")
             continue
 
 async def handle_client(websocket, path):
