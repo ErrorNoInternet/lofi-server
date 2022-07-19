@@ -59,6 +59,7 @@ def update_video():
                         print(f"Removing {old_id} (dead connection)...")
                         del new_last_played[path]
                 last_played = new_last_played
+            time.sleep(1)
         except Exception as exception:
             print(f"Failed to process stream: {exception}")
             continue
