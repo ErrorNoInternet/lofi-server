@@ -1,4 +1,5 @@
 import os
+import time
 import asyncio
 import requests
 import threading
@@ -26,7 +27,7 @@ def update_video():
                     break
                 except Exception as exception:
                     print(f"Failed to fetch video: {exception}")
-                    await asyncio.sleep(1)
+                    time.sleep(1)
                     continue
             playlists = playlist_data.split("#EXTINF:5.0,")
             playlists = playlists[1:]
